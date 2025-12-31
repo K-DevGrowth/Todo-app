@@ -1,0 +1,15 @@
+GET http://localhost:3001/api/todos
+
+###
+GET http://localhost:3001/api/todos/2
+
+###
+DELETE http://localhost:3001/api/todos/2
+
+###
+POST http://localhost:3001/api/todos
+content-type: application/json
+
+{
+  "title": "Play video games"
+}
