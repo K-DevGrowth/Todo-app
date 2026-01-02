@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const app = express();
 
 let todos = [
@@ -12,6 +13,7 @@ let todos = [
   },
 ];
 
+app.use(cors());
 app.use(express.json());
 
 app.get("/api/todos", (req, res) => {
@@ -60,6 +62,13 @@ app.post("/api/todos", (req, res) => {
 
   res.json(todo);
 });
+
+const unknowEndpoint = (req, res) => {
+  res.status(404).send({
+    error: "unknown endpoint",
+  });
+};
+app.use(unknowEndpoint);
 
 const PORT = 3001;
 app.listen(PORT, () => {
