@@ -1,0 +1,12 @@
+{
+  "todos":[
+  {
+    "id": "1",
+    "title": "Read for 1 hour"
+  },
+  {
+    "id": "2",
+    "title": "Complete Todo App on Frontend Mentor"
+  }
+]
+}

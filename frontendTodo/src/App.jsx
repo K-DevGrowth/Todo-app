@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import todoService from "./services/todos";
 
 const App = () => {
   const [todoItems, setTodoItems] = useState([]);
@@ -8,6 +9,10 @@ const App = () => {
     e.preventDefault();
     setTodoItems((prev) => [...prev, { title: query }]);
   };
+
+  useEffect(() => {
+    todoService.getAll().then((initialTodos) => setTodoItems(initialTodos));
+  }, []);
 
   return (
     <main>
@@ -21,7 +26,7 @@ const App = () => {
         />
 
         {todoItems.map((item) => (
-          <div key={item.title}>
+          <div key={item.id}>
             <input type="checkbox" />
             <label htmlFor="">{item.title}</label>
           </div>

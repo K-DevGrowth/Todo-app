@@ -14,6 +14,7 @@ let todos = [
 ];
 
 app.use(cors());
+app.use(express.static("dist"));
 app.use(express.json());
 
 app.get("/api/todos", (req, res) => {
@@ -70,7 +71,7 @@ const unknowEndpoint = (req, res) => {
 };
 app.use(unknowEndpoint);
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on the port ${PORT}`);
 });
