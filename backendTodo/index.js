@@ -1,5 +1,4 @@
 const express = require("express");
-const cors = require("cors");
 const app = express();
 
 let todos = [
@@ -13,7 +12,6 @@ let todos = [
   },
 ];
 
-app.use(cors());
 app.use(express.static("dist"));
 app.use(express.json());
 
