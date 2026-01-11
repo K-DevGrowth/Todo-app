@@ -1,33 +1,28 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
-
-let todos = [
-  {
-    id: "1",
-    title: "Read for 1 hour",
-  },
-  {
-    id: "2",
-    title: "Complete Todo App on Frontend Mentor",
-  },
-];
+const Todo = require("./models/todos");
 
 app.use(express.static("dist"));
 app.use(express.json());
 
 app.get("/api/todos", (req, res) => {
-  res.json(todos);
+  Todo.find({}).then((todos) => res.json(todos));
 });
 
 app.get("/api/todos/:id", (req, res) => {
-  const id = req.params.id;
-  const todo = todos.find((t) => t.id === id);
-
-  if (todo) {
-    res.json(todo);
-  } else {
-    res.status(404).end();
-  }
+  Todo.findById(req.params.id)
+    .then((todo) => {
+      if (todo) {
+        res.json(todo);
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(400).send({ error: "malformatted id" });
+    });
 });
 
 app.delete("/api/todos/:id", (req, res) => {
@@ -52,14 +47,11 @@ app.post("/api/todos", (req, res) => {
     });
   }
 
-  const todo = {
-    id: generateId(),
+  const todo = new Todo({
     title: body.title,
-  };
+  });
 
-  todos = todos.concat(todo);
-
-  res.json(todo);
+  todo.save().then((savedTodo) => res.json(savedTodo));
 });
 
 const unknowEndpoint = (req, res) => {
