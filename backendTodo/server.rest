@@ -4,12 +4,12 @@ GET http://localhost:3001/api/todos
 GET http://localhost:3001/api/todos/6961cd29d7bc9de160059b69
 
 ###
-DELETE http://localhost:3001/api/todos/2
+DELETE http://localhost:3001/api/todos/6965114bb0c5cd884fbd1910
 
 ###
 POST http://localhost:3001/api/todos
 content-type: application/json
 
 {
-  "title": "Play video games"
+  "title": "Just coding"
 }

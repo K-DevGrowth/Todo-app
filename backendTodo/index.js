@@ -3,6 +3,22 @@ const express = require("express");
 const app = express();
 const Todo = require("./models/todos");
 
+const errorHandler = (error, req, res, next) => {
+  console.log(error.message);
+
+  if (error.name === "CastError") {
+    return res.status(400).send({ error: "malformatted id" });
+  }
+
+  next(error);
+};
+
+const unknowEndpoint = (req, res) => {
+  res.status(404).send({
+    error: "unknown endpoint",
+  });
+};
+
 app.use(express.static("dist"));
 app.use(express.json());
 
@@ -10,7 +26,7 @@ app.get("/api/todos", (req, res) => {
   Todo.find({}).then((todos) => res.json(todos));
 });
 
-app.get("/api/todos/:id", (req, res) => {
+app.get("/api/todos/:id", (req, res, next) => {
   Todo.findById(req.params.id)
     .then((todo) => {
       if (todo) {
@@ -19,17 +35,13 @@ app.get("/api/todos/:id", (req, res) => {
         res.status(404).end();
       }
     })
-    .catch((error) => {
-      console.log(error);
-      res.status(400).send({ error: "malformatted id" });
-    });
+    .catch((error) => next(error));
 });
 
-app.delete("/api/todos/:id", (req, res) => {
-  const id = req.params.id;
-  todos = todos.filter((todo) => todo.id !== id);
-
-  res.status(204).end();
+app.delete("/api/todos/:id", (req, res, next) => {
+  Todo.findByIdAndDelete(req.params.id)
+    .then((result) => res.status(204).end())
+    .catch((error) => next(error));
 });
 
 const generateId = () => {
@@ -54,12 +66,8 @@ app.post("/api/todos", (req, res) => {
   todo.save().then((savedTodo) => res.json(savedTodo));
 });
 
-const unknowEndpoint = (req, res) => {
-  res.status(404).send({
-    error: "unknown endpoint",
-  });
-};
 app.use(unknowEndpoint);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
