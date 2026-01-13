@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-const password = process.argv[2];
 const url = process.env.MONGODB_URI;
 
 mongoose.set("strictQuery", false);
@@ -10,7 +9,11 @@ mongoose
   .catch((error) => console.log("error connecting to MongoDB:", error.message));
 
 const todoSchema = new mongoose.Schema({
-  title: String,
+  title: {
+    type: String,
+    minLength: 5,
+    required: true,
+  },
 });
 
 todoSchema.set("toJSON", {

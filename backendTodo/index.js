@@ -1,13 +1,16 @@
-require("dotenv").config();
+const config = require("./utils/config");
+const logger = require("./utils/logger");
 const express = require("express");
 const app = express();
-const Todo = require("./models/todos");
+const Todo = require("./models/todo");
 
 const errorHandler = (error, req, res, next) => {
   console.log(error.message);
 
   if (error.name === "CastError") {
     return res.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return res.status(400).send({ error: error.message });
   }
 
   next(error);
@@ -44,13 +47,25 @@ app.delete("/api/todos/:id", (req, res, next) => {
     .catch((error) => next(error));
 });
 
-const generateId = () => {
-  const maxId =
-    todos.length > 0 ? Math.max(...todos.map((todo) => Number(todo.id))) : 0;
-  return String(maxId + 1);
-};
+app.put("/api/todos/:id", (req, res, next) => {
+  const { title } = req.body;
 
-app.post("/api/todos", (req, res) => {
+  Todo.findById(req.params.id)
+    .then((todo) => {
+      if (!todo) {
+        return res.status(404).end();
+      }
+
+      todo.title = title;
+
+      return todo.save().then((updatedTodo) => {
+        res.json(updatedTodo);
+      });
+    })
+    .catch((error) => next(error));
+});
+
+app.post("/api/todos", (req, res, next) => {
   const body = req.body;
 
   if (!body.title) {
@@ -63,13 +78,15 @@ app.post("/api/todos", (req, res) => {
     title: body.title,
   });
 
-  todo.save().then((savedTodo) => res.json(savedTodo));
+  todo
+    .save()
+    .then((savedTodo) => res.json(savedTodo))
+    .catch((error) => next(error));
 });
 
 app.use(unknowEndpoint);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Server running on the port ${PORT}`);
+app.listen(config.PORT, () => {
+  logger.info(`Server running on the port ${config.PORT}`);
 });
