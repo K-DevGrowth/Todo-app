@@ -1,0 +1,57 @@
+const todosRouter = require("express").Router();
+const Todo = require("../models/todo");
+
+todosRouter.get("/", (req, res) => {
+  Todo.find({}).then((todos) => {
+    res.json(todos);
+  });
+});
+
+todosRouter.get("/:id", (req, res, next) => {
+  Todo.findById(req.params.id)
+    .then((todo) => {
+      if (todo) {
+        res.json(todo);
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
+});
+
+todosRouter.post("/", (req, res, next) => {
+  const body = req.body;
+
+  const todo = new Todo({
+    title: body.title,
+  });
+
+  todo
+    .save()
+    .then((savedTodo) => res.json(savedTodo))
+    .catch((error) => next(error));
+});
+
+todosRouter.delete("/:id", (req, res, next) => {
+  Todo.findByIdAndUpdate(req.params.id)
+    .then(() => res.status(204).end())
+    .catch((error) => next(error));
+});
+
+todosRouter.put("/:id", (req, res, next) => {
+  const { title } = req.body;
+
+  Todo.findById(req.params.id)
+    .then((todo) => {
+      if (todo) {
+        res.json(todo);
+      }
+
+      todo.title = title;
+
+      return todo.save().then((updatedTodo) => res.json(updatedTodo));
+    })
+    .catch((error) => next(error));
+});
+
+module.exports = todosRouter;
