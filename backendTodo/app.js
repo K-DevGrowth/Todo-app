@@ -7,7 +7,7 @@ const todosRouter = require("./controllers/todos");
 
 const app = express();
 
-logger.info("connecting to", config.MONGODB_URI);
+// logger.info("connecting to", config.MONGODB_URI);
 
 mongoose
   .connect(config.MONGODB_URI, { family: 4 })
@@ -24,7 +24,7 @@ app.use(middleware.requestLogger);
 
 app.use("/api/todos", todosRouter);
 
-app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
+app.use(middleware.unknownEndpoint);
 
 module.exports = app;

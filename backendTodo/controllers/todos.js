@@ -2,9 +2,7 @@ const todosRouter = require("express").Router();
 const Todo = require("../models/todo");
 
 todosRouter.get("/", (req, res) => {
-  Todo.find({}).then((todos) => {
-    res.json(todos);
-  });
+  Todo.find({}).then((todos) => res.json(todos));
 });
 
 todosRouter.get("/:id", (req, res, next) => {
@@ -28,30 +26,31 @@ todosRouter.post("/", (req, res, next) => {
 
   todo
     .save()
-    .then((savedTodo) => res.json(savedTodo))
+    .then((savedtodo) => res.json(savedtodo))
     .catch((error) => next(error));
 });
 
 todosRouter.delete("/:id", (req, res, next) => {
-  Todo.findByIdAndUpdate(req.params.id)
-    .then(() => res.status(204).end())
+  Todo.findByIdAndDelete(req.params.id)
+    .then(() => res.status(204).end)
     .catch((error) => next(error));
 });
 
 todosRouter.put("/:id", (req, res, next) => {
   const { title } = req.body;
 
-  Todo.findById(req.params.id)
-    .then((todo) => {
-      if (todo) {
-        res.json(todo);
-      }
+  Todo.findById(res.params.id).then((todo) => {
+    if (!todo) {
+      return res.status(404).end();
+    }
 
-      todo.title = title;
+    todo.title = title;
 
-      return todo.save().then((updatedTodo) => res.json(updatedTodo));
-    })
-    .catch((error) => next(error));
+    return todo
+      .save()
+      .then((updatedTodo) => res.json(updatedTodo))
+      .catch((error) => next(error));
+  });
 });
 
 module.exports = todosRouter;

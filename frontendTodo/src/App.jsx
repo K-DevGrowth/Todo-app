@@ -7,7 +7,10 @@ const App = () => {
 
   const addToList = (e) => {
     e.preventDefault();
-    setTodoItems((prev) => [...prev, { title: query }]);
+    todoService.create({ title: query }).then((returnedValue) => {
+      setTodoItems([...todoItems, returnedValue]);
+      setQuery("");
+    });
   };
 
   useEffect(() => {
