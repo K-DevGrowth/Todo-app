@@ -6,6 +6,10 @@ const todoSchema = new mongoose.Schema({
     minLength: 5,
     required: true,
   },
+  status: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 todoSchema.set("toJSON", {

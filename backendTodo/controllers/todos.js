@@ -22,6 +22,7 @@ todosRouter.post("/", (req, res, next) => {
 
   const todo = new Todo({
     title: body.title,
+    status: body.status || false,
   });
 
   todo
@@ -37,7 +38,7 @@ todosRouter.delete("/:id", (req, res, next) => {
 });
 
 todosRouter.put("/:id", (req, res, next) => {
-  const { title } = req.body;
+  const { title, status } = req.body;
 
   Todo.findById(res.params.id).then((todo) => {
     if (!todo) {
@@ -45,6 +46,7 @@ todosRouter.put("/:id", (req, res, next) => {
     }
 
     todo.title = title;
+    todo.status = status;
 
     return todo
       .save()

@@ -13,28 +13,42 @@ const App = () => {
     });
   };
 
+  const removeFromList = (id) => {
+    todoService.deleted(id).then(() => {
+      setTodoItems(todoItems.filter((todo) => todo.id !== id));
+    });
+  };
+
   useEffect(() => {
     todoService.getAll().then((initialTodos) => setTodoItems(initialTodos));
   }, []);
 
   return (
     <main>
-      <h1>TODO</h1>
-      <form onSubmit={addToList}>
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Create a new todo..."
-        />
+      <div className="p-4">
+        <h1 className="text-4xl font-bold">TODO</h1>
+        <form onSubmit={addToList}>
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Create a new todo..."
+          />
 
-        {todoItems.map((item) => (
-          <div key={item.id}>
-            <input type="checkbox" />
-            <label htmlFor="">{item.title}</label>
-          </div>
-        ))}
-      </form>
+          {todoItems.map((item) => (
+            <div
+              key={item.id}
+              className={`${item.status === true ? "text-red-400" : ""}`}
+            >
+              <input type="checkbox" id="todo" checked={item.status} />
+              <label htmlFor="todo">{item.title}</label>
+              <button type="button" onClick={() => removeFromList(item.id)}>
+                X
+              </button>
+            </div>
+          ))}
+        </form>
+      </div>
     </main>
   );
 };
