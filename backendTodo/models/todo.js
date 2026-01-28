@@ -6,7 +6,7 @@ const todoSchema = new mongoose.Schema({
     minLength: 5,
     required: true,
   },
-  status: {
+  completed: {
     type: Boolean,
     default: false,
   },
