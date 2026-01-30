@@ -16,9 +16,14 @@ const deleted = (id) => {
   return request.then(() => id);
 };
 
+const deleteAllCompleted = () => {
+  const request = axios.delete(`${baseUrl}/completed`);
+  return request.then(() => true);
+};
+
 const update = (id, newObject) => {
   const request = axios.put(`${baseUrl}/${id}`, newObject);
   return request.then((response) => response.data);
 };
 
-export default { getAll, create, deleted, update };
+export default { getAll, create, deleted, update, deleteAllCompleted };

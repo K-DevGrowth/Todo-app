@@ -31,6 +31,12 @@ todosRouter.post("/", (req, res, next) => {
     .catch((error) => next(error));
 });
 
+todosRouter.delete("/completed", (req, res, next) => {
+  Todo.deleteMany({ completed: true })
+    .then(() => res.status(204).end())
+    .catch((error) => next(error));
+});
+
 todosRouter.delete("/:id", (req, res, next) => {
   Todo.findByIdAndDelete(req.params.id)
     .then(() => res.status(204).end())
