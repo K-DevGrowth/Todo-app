@@ -8,36 +8,33 @@ const App = () => {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("All");
 
-  const addToList = (e) => {
+  const addToList = async (e) => {
     e.preventDefault();
-    todoService.create({ title: query }).then((returnedValue) => {
-      setTodoItems((prev) => [...prev, returnedValue]);
-      setQuery("");
-    });
+    const returnedValue = await todoService.create({ title: query });
+    setTodoItems((prev) => [...prev, returnedValue]);
+    setQuery("");
   };
 
-  const removeFromList = (id) => {
-    todoService.deleted(id).then(() => {
-      setTodoItems((prev) => prev.filter((todo) => todo.id !== id));
-    });
+  const removeFromList = async (id) => {
+    await todoService.deleted(id);
+    setTodoItems((prev) => prev.filter((todo) => todo.id !== id));
   };
 
-  const deleteAllCompletedTodo = () => {
-    todoService.deleteAllCompleted().then(() => {
-      setTodoItems((prev) => prev.filter((item) => !item.completed));
-    });
+  const deleteAllCompletedTodo = async () => {
+    await todoService.deleteAllCompleted();
+    setTodoItems((prev) => prev.filter((item) => !item.completed));
   };
 
-  const handleCheck = (id) => {
+  const handleCheck = async (id) => {
     const existingTodo = todoItems.find((todo) => todo.id === id);
 
-    todoService
-      .update(id, { ...existingTodo, completed: !existingTodo.completed })
-      .then((returnedValue) => {
-        setTodoItems((prev) =>
-          prev.map((item) => (item.id !== id ? item : returnedValue)),
-        );
-      });
+    const updatedTodo = await todoService.update(id, {
+      ...existingTodo,
+      completed: !existingTodo.completed,
+    });
+    setTodoItems((prev) =>
+      prev.map((item) => (item.id !== id ? item : updatedTodo)),
+    );
   };
 
   const list = todoItems.concat();
@@ -51,7 +48,12 @@ const App = () => {
           : "";
 
   useEffect(() => {
-    todoService.getAll().then((initialTodos) => setTodoItems(initialTodos));
+    const fetchTodos = async () => {
+      const initialTodos = await todoService.getAll();
+      setTodoItems(initialTodos);
+    };
+
+    fetchTodos();
   }, []);
 
   return (
