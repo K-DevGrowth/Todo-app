@@ -1,23 +1,22 @@
 const todosRouter = require("express").Router();
 const Todo = require("../models/todo");
 
-todosRouter.get("/", (req, res) => {
-  Todo.find({}).then((todos) => res.json(todos));
+todosRouter.get("/", async (req, res) => {
+  const todos = await Todo.find({});
+  res.json(todos);
 });
 
-todosRouter.get("/:id", (req, res, next) => {
-  Todo.findById(req.params.id)
-    .then((todo) => {
-      if (todo) {
-        res.json(todo);
-      } else {
-        res.status(404).end();
-      }
-    })
-    .catch((error) => next(error));
+todosRouter.get("/:id", async (req, res) => {
+  const todo = await Todo.findById(req.params.id);
+
+  if (todo) {
+    res.json(todo);
+  } else {
+    res.status(404).end();
+  }
 });
 
-todosRouter.post("/", (req, res, next) => {
+todosRouter.post("/", async (req, res) => {
   const body = req.body;
 
   const todo = new Todo({
@@ -25,40 +24,33 @@ todosRouter.post("/", (req, res, next) => {
     completed: body.completed || false,
   });
 
-  todo
-    .save()
-    .then((savedtodo) => res.json(savedtodo))
-    .catch((error) => next(error));
+  const newTodo = await todo.save();
+  res.status(201).json(newTodo);
 });
 
-todosRouter.delete("/completed", (req, res, next) => {
-  Todo.deleteMany({ completed: true })
-    .then(() => res.status(204).end())
-    .catch((error) => next(error));
+todosRouter.delete("/completed", async (req, res) => {
+  await Todo.deleteMany({ completed: true });
+  res.status(204).end();
 });
 
-todosRouter.delete("/:id", (req, res, next) => {
-  Todo.findByIdAndDelete(req.params.id)
-    .then(() => res.status(204).end())
-    .catch((error) => next(error));
+todosRouter.delete("/:id", async (req, res) => {
+  await Todo.findByIdAndDelete(req.params.id);
+  res.status(204).end();
 });
 
-todosRouter.put("/:id", (req, res, next) => {
+todosRouter.put("/:id", async (req, res) => {
   const { title, completed } = req.body;
 
-  Todo.findById(req.params.id).then((todo) => {
-    if (!todo) {
-      return res.status(404).end();
-    }
+  const todo = await Todo.findById(req.params.id);
+  if (!todo) {
+    return res.status(404).end();
+  }
 
-    todo.title = title;
-    todo.completed = completed;
+  todo.title = title;
+  todo.completed = completed;
 
-    return todo
-      .save()
-      .then((updatedTodo) => res.json(updatedTodo))
-      .catch((error) => next(error));
-  });
+  const updatedTodo = await todo.save();
+  res.json(updatedTodo);
 });
 
 module.exports = todosRouter;

@@ -9,7 +9,12 @@ Content-Type: application/json
   "completed": true
 }
 ###
-PUT http://localhost:3001/api/todos/697a3bd8f778b53a787544d6
+PUT http://localhost:3001/api/todos/697cdba4e6333a9b89738fb2
+Content-Type: application/json
 
+{
+  "title": "Do yoga",
+  "completed": false
+}
 ###
 DELETE http://localhost:3001/api/todos
