@@ -1,29 +1,29 @@
 import axios from "axios";
 const baseUrl = "/api/todos";
 
-const getAll = () => {
-  const request = axios.get(baseUrl);
-  return request.then((response) => response.data);
+const getAll = async () => {
+  const request = await axios.get(baseUrl);
+  return request.data;
 };
 
-const create = (newObject) => {
-  const request = axios.post(baseUrl, newObject);
-  return request.then((response) => response.data);
+const create = async (newObject) => {
+  const request = await axios.post(baseUrl, newObject);
+  return request.data;
 };
 
-const deleted = (id) => {
-  const request = axios.delete(`${baseUrl}/${id}`);
-  return request.then(() => id);
+const deleted = async (id) => {
+  await axios.delete(`${baseUrl}/${id}`);
+  return id;
 };
 
-const deleteAllCompleted = () => {
-  const request = axios.delete(`${baseUrl}/completed`);
-  return request.then(() => true);
+const deleteAllCompleted = async () => {
+  await axios.delete(`${baseUrl}/completed`);
+  return true;
 };
 
-const update = (id, newObject) => {
-  const request = axios.put(`${baseUrl}/${id}`, newObject);
-  return request.then((response) => response.data);
+const update = async (id, newObject) => {
+  const request = await axios.put(`${baseUrl}/${id}`, newObject);
+  return request.data;
 };
 
 export default { getAll, create, deleted, update, deleteAllCompleted };
