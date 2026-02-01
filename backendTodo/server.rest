@@ -6,7 +6,8 @@ Content-Type: application/json
 
 {
   "title": "Do homework",
-  "completed": true
+  "completed": true,
+  "userId": "697f808e2027fb6bde272ce2"
 }
 ###
 PUT http://localhost:3001/api/todos/697cdba4e6333a9b89738fb2
@@ -14,7 +15,20 @@ Content-Type: application/json
 
 {
   "title": "Do yoga",
-  "completed": false
+  "completed": false,
 }
 ###
 DELETE http://localhost:3001/api/todos
+
+###
+GET http://localhost:3001/api/users
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "username": "Kdev",
+  "name": "Khoi",
+  "password": "123456"
+}

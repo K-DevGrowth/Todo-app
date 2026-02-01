@@ -7,6 +7,8 @@ const App = () => {
   const [todoItems, setTodoItems] = useState([]);
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("All");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const addToList = async (e) => {
     e.preventDefault();
@@ -55,6 +57,11 @@ const App = () => {
 
     fetchTodos();
   }, []);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    console.log("logging in with", username, password);
+  };
 
   return (
     <main>
@@ -140,6 +147,32 @@ const App = () => {
                 </button>
               </div>
             </div>
+          </form>
+          <h2>Login</h2>
+          <form onSubmit={handleLogin}>
+            <div>
+              <label htmlFor="usernameTodo">username</label>
+              <input
+                type="text"
+                id="usernameTodo"
+                className="border"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="passwordTodo">password</label>
+              <input
+                type="password"
+                id="passwordTodo"
+                className="border"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <button type="submit" className="border cursor-pointer">
+              login
+            </button>
           </form>
         </div>
       </div>
