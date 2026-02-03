@@ -5,6 +5,7 @@ const logger = require("./utils/logger");
 const middleware = require("./utils/middleware");
 const todosRouter = require("./controllers/todos");
 const usersRouter = require("./controllers/users");
+const loginRouter = require("./controllers/login");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(middleware.requestLogger);
 
 app.use("/api/todos", todosRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/login", loginRouter);
 
 app.use(middleware.errorHandler);
 app.use(middleware.unknownEndpoint);

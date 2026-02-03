@@ -1,9 +1,21 @@
 const todosRouter = require("express").Router();
 const Todo = require("../models/todo");
 const User = require("../models/user");
+const jwt = require("jsonwebtoken");
+
+const getTokenForm = (req) => {
+  const authorization = req.get("authorization");
+  if (authorization && authorization.startsWith("Bearer ")) {
+    return authorization.replace("Bearer ", "");
+  }
+  return null;
+};
 
 todosRouter.get("/", async (req, res) => {
-  const todos = await Todo.find({});
+  const todos = await Todo.find({}).populate("user", {
+    username: 1,
+    name: 1,
+  });
   res.json(todos);
 });
 
@@ -19,8 +31,13 @@ todosRouter.get("/:id", async (req, res) => {
 
 todosRouter.post("/", async (req, res) => {
   const body = req.body;
-
-  const user = await User.findById(body.userId);
+  const decodedToken = jwt.verify(getTokenForm(req), process.env.SECRET);
+  if (!decodedToken.id) {
+    return res.status(401).json({
+      error: "token invalid",
+    });
+  }
+  const user = await User.findById(decodedToken.id);
 
   if (!user) {
     return res.status(400).json({
